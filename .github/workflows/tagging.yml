@@ -87,4 +87,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: "${{ github.event.inputs.selection }}/v${{ steps.bump.outputs.new_version }}"
-          release_name: "Release ${{ github.event.inputs.selection }}/v${{ steps.bump.outputs.new_version }}"
+          release_name: "${{ github.event.inputs.selection }}/v${{ steps.bump.outputs.new_version }}"
