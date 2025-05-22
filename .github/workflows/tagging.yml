@@ -47,7 +47,7 @@ jobs:
             echo "No existing tag found. Using default version 0.0.0"
             echo "version=0.0.0" >> "$GITHUB_OUTPUT"
           else
-            VERSION=${LATEST_TAG##*/v}  # Strip prefix
+            VERSION=${LATEST_TAG##*/v}  
             echo "Found latest version: $VERSION"
             echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           fi
@@ -78,7 +78,7 @@ jobs:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${{ github.event.inputs.selection }}/v${{ steps.bump.outputs.new_version }}"
-          git tag -a "$TAG" -m "Release $TAG"
+          git tag -a "$TAG" -m "$TAG"
           git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }}.git --tags
 
       - name: Create GitHub Release
@@ -88,4 +88,3 @@ jobs:
         with:
           tag_name: "${{ github.event.inputs.selection }}/v${{ steps.bump.outputs.new_version }}"
           release_name: "Release ${{ github.event.inputs.selection }}/v${{ steps.bump.outputs.new_version }}"
-          body: "Description of the changes in this release"
