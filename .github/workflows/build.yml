@@ -17,16 +17,79 @@ jobs:
     steps:
       - name: Get Selected Option
         id: get-selection
-        run: echo "selection=${{ github.event.inputs.selection }}" >> $GITHUB_OUTPUT
+        run: echo "selection=${{ github.event.inputs.selection }}" >> $GITHUB_ENV
 
       - name: Build p2p
-        if: steps.get-selection.outputs.selection == 'p2p'
+        if: env.SELECTION == 'p2p'
         run: |
           echo "Starting Vercel deployment for P2P..."
           echo "Done"
 
       - name: Build cdd
-        if: steps.get-selection.outputs.selection == 'cdd'
+        if: env.SELECTION == 'cdd'
         run: |
           echo "Starting Vercel deployment for CDD..."
           echo "Done"
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Get Latest Version Tag
+        id: get_latest
+        run: |
+          # Get latest tag for the selected app
+          TAG_PREFIX="${{ env.SELECTION }}/v"
+          LATEST_TAG=$(git tag --list "${TAG_PREFIX}*" | sort -V | tail -n1)
+          echo "${LATEST_TAG}"
+
+          if [ -z "${LATEST_TAG}" ]; then
+            echo "No existing tag found. Using default version 0.0.0"
+            echo "version=0.0.0" >> "$GITHUB_OUTPUT"
+          else
+            VERSION=${LATEST_TAG##*/v}  
+            echo "Found latest version: $VERSION"
+            echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Calculate Next Version
+        id: bump
+        run: |
+          IFS='.' read -r MAJOR MINOR PATCH <<< "${{ steps.get_latest.outputs.version }}"
+          case "${{ github.event.inputs.version_bump }}" in
+            major)
+              MAJOR=$((MAJOR + 1))
+              MINOR=0
+              PATCH=0
+              ;;
+            minor)
+              MINOR=$((MINOR + 1))
+              PATCH=0
+              ;;
+            patch)
+              PATCH=$((PATCH + 1))
+              ;;
+          esac
+          NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+          echo "new_version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Create and Push Tag
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.event.inputs.selection }}/v${{ steps.bump.outputs.new_version }}"
+          git tag -a "$TAG" -m "$TAG"
+          git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }}.git --tags
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: "${{ github.event.inputs.selection }}/v${{ steps.bump.outputs.new_version }}"
+          name: "${{ github.event.inputs.selection }}/v${{ steps.bump.outputs.new_version }}"
