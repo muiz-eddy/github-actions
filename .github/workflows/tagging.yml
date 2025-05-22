@@ -15,7 +15,7 @@ jobs:
   tag:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Ensure this job has permission to push
+      contents: write  # Required to push tags and create releases
     steps:
       - uses: actions/checkout@v2
 
@@ -30,11 +30,12 @@ jobs:
         run: |
           git tag -a "v${{ github.run_number }}" -m "Release v${{ github.run_number }}"
           git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }}.git --tags
-      - name: Create Release
-  uses: actions/create-release@v1
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  with:
-    tag_name: 'v${{ github.run_number }}'
-    release_name: 'Release v${{ github.run_number }}'
-    body: 'Description of the changes in this release'
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: "v${{ github.run_number }}"
+          release_name: "Release v${{ github.run_number }}"
+          body: "Description of the changes in this release"
