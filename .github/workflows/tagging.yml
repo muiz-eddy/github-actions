@@ -15,9 +15,9 @@ on:
         required: true
         type: choice
         options:
-          - patch
-          - minor
           - major
+          - minor
+          - patch
 
 jobs:
   tag:
@@ -40,7 +40,7 @@ jobs:
           TAG_PREFIX="${{ github.event.inputs.selection }}/v"
           LATEST_TAG=$(git tag --list "${TAG_PREFIX}*" | sort -V | tail -n1)
 
-          if [ -z "$LATEST_TAG" ]; then
+          if [ -z "${LATEST_TAG}" ]; then
             echo "No existing tag found. Using default version 0.0.0"
             echo "version=0.0.0" >> "$GITHUB_OUTPUT"
           else
