@@ -1,6 +1,5 @@
 name: build stuff
 
-
 on:
   workflow_dispatch:
     inputs:
@@ -11,24 +10,23 @@ on:
         options:
           - p2p
           - cdd
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Get Selected Option
         id: get-selection
-        run: echo "SELECTION=${{ github.event.inputs.selection }}" >> $GITHUB_ENV
+        run: echo "selection=${{ github.event.inputs.selection }}" >> $GITHUB_OUTPUT
 
       - name: Build p2p
-        if: env.SELECTION == 'p2p'
+        if: steps.get-selection.outputs.selection == 'p2p'
         run: |
-          echo $GITHUB_ENV
-          echo "Starting Vercel deployment..."
+          echo "Starting Vercel deployment for P2P..."
           echo "Done"
-      
-      - name: Build p2p
-        if: env.SELECTION == 'cdd'
+
+      - name: Build cdd
+        if: steps.get-selection.outputs.selection == 'cdd'
         run: |
-          echo $GITHUB_ENV
-          echo "Starting Vercel deployment..."
+          echo "Starting Vercel deployment for CDD..."
           echo "Done"
