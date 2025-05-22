@@ -1,0 +1,34 @@
+name: build stuff
+
+
+on:
+  workflow_dispatch:
+    inputs:
+      selection:
+        description: 'Select Mini App:'
+        required: true
+        type: choice
+        options:
+          - p2p
+          - cdd
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Selected Option
+        id: get-selection
+        run: echo "SELECTION=${{ github.event.inputs.selection }}" >> $GITHUB_ENV
+
+      - name: Build p2p
+        if: env.SELECTION == 'p2p'
+        run: |
+          echo $GITHUB_ENV
+          echo "Starting Vercel deployment..."
+          echo "Done"
+      
+      - name: Build p2p
+        if: env.SELECTION == 'cdd'
+        run: |
+          echo $GITHUB_ENV
+          echo "Starting Vercel deployment..."
+          echo "Done"
