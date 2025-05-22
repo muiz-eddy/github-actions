@@ -28,7 +28,7 @@ jobs:
         env:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git tag -a "${{ github.event.inputs.selection }} - v${{ github.run_number }}" -m "Release ${{ github.event.inputs.selection }} - v${{ github.run_number }}"
+          git tag -a "${{ github.event.inputs.selection }}-v${{ github.run_number }}" -m "Release ${{ github.event.inputs.selection }}-v${{ github.run_number }}"
           git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }}.git --tags
 
       - name: Create GitHub Release
