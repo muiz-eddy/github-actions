@@ -22,6 +22,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Get Selected Option
         id: get-selection
@@ -52,7 +54,7 @@ jobs:
         id: get_latest
         run: |
           # Get latest tag for the selected app
-          TAG_PREFIX="${{ github.event.inputs.selection }}/v"
+          TAG_PREFIX="${{ env.SELECTION }}/v"
           LATEST_TAG=$(git tag --list "${TAG_PREFIX}*" | sort -V | tail -n1)
           echo "${LATEST_TAG}"
 
