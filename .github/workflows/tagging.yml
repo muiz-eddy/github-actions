@@ -82,7 +82,7 @@ jobs:
           git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }}.git --tags
 
       - name: Create GitHub Release
-        uses: actions/create-release@v1
+        uses: actions/create-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
