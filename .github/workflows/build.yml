@@ -29,18 +29,6 @@ jobs:
         id: get-selection
         run: echo "selection=${{ github.event.inputs.selection }}" >> $GITHUB_ENV
 
-      - name: Build p2p
-        if: env.SELECTION == 'p2p'
-        run: |
-          echo "Starting Vercel deployment for P2P..."
-          echo "Done"
-
-      - name: Build cdd
-        if: env.SELECTION == 'cdd'
-        run: |
-          echo "Starting Vercel deployment for CDD..."
-          echo "Done"
-
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -54,7 +42,7 @@ jobs:
         id: get_latest
         run: |
           # Get latest tag for the selected app
-          TAG_PREFIX="${{ github.event.inputs.selection }}/v"
+          TAG_PREFIX="${{ env.SELECTION }}/v"
           LATEST_TAG=$(git tag --list "${TAG_PREFIX}*" | sort -V | tail -n1)
           echo "${LATEST_TAG}"
 
@@ -103,3 +91,19 @@ jobs:
         with:
           tag_name: "${{ github.event.inputs.selection }}/v${{ steps.bump.outputs.new_version }}"
           name: "${{ github.event.inputs.selection }}/v${{ steps.bump.outputs.new_version }}"
+
+
+
+      - name: Build p2p
+        if: env.SELECTION == 'p2p'
+        run: |
+          echo "Starting Vercel deployment for P2P..."
+          echo "Done"
+
+      - name: Build cdd
+        if: env.SELECTION == 'cdd'
+        run: |
+          echo "Starting Vercel deployment for CDD..."
+          echo "Done"
+
+      
