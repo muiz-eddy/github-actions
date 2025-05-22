@@ -14,13 +14,21 @@ on:
 jobs:
   tag:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Ensure this job has permission to push
     steps:
       - uses: actions/checkout@v2
-      - name: Create Tag
+
+      - name: Configure Git
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+
+      - name: Create and Push Tag
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
           git tag -a "v${{ github.run_number }}" -m "Release v${{ github.run_number }}"
-          git push origin "v${{ github.run_number }}"
+          git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }}.git --tags
 
 
