@@ -80,7 +80,7 @@ jobs:
         env:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          TAG="${{ github.event.inputs.selection }}/v${{ steps.bump.outputs.new_version }}"
+          TAG="${SELECTION}/v${{ steps.bump.outputs.new_version }}"
           git tag -a "$TAG" -m "$TAG"
           git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }}.git --tags
 
