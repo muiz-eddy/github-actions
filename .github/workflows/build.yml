@@ -42,7 +42,7 @@ jobs:
         id: get_latest
         run: |
           # Get latest tag for the selected app
-          TAG_PREFIX="env.SELECTION /v"
+          TAG_PREFIX="${env.SELECTION} /v"
           LATEST_TAG=$(git tag --list "${TAG_PREFIX}*" | sort -V | tail -n1)
           echo "${LATEST_TAG}"
 
