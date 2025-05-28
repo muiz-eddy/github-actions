@@ -105,9 +105,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: "${SELECTION}/v${{ steps.bump.outputs.new_version }}"
-          name: "${SELECTION}/v${{ steps.bump.outputs.new_version }}"
-          body: "${DESCRIPTION}"         
+          tag_name: "${{ env.SELECTION }}/v${{ steps.bump.outputs.new_version }}"
+          name: "${{ env.SELECTION }}/v${{ steps.bump.outputs.new_version }}"
+          body: "${{ env.DESCRIPTION }}"         
 
       - name: Build p2p
         if: env.SELECTION == 'p2p'
