@@ -88,9 +88,9 @@ jobs:
            echo "Branch feature/${SELECTION} not found (case-insensitive match failed)."
           exit 1
           else
-            echo "Found matching branch: $TARGET_BRANCH"
-            git fetch origin "$TARGET_BRANCH"
-            git checkout "$TARGET_BRANCH"
+            echo "Found matching branch: $BRANCH"
+            git fetch origin "$BRANCH"
+            git checkout "$BRANCH"
           fi
 
           git checkout feature/${SELECTION}
