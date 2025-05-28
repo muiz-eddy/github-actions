@@ -10,7 +10,7 @@ on:
         options:
           - p2p
           - cdd
-          - cdd
+          - csat
       version_bump:
         description: 'Version bump type (major, minor, patch):'
         required: true
