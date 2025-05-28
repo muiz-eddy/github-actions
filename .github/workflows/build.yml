@@ -81,6 +81,18 @@ jobs:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${SELECTION}/v${{ steps.bump.outputs.new_version }}"
+          BRANCH=$(git ls-remote --heads origin | awk -F'/' '{print $3"/"$4}' | grep -i "^feature/${SELECTION}$" || true)
+
+          if [ -z "$BRANCH" ]; then
+           echo "Branch feature/${SELECTION} not found (case-insensitive match failed)."
+          exit 1
+          else
+            echo "Found matching branch: $TARGET_BRANCH"
+            git fetch origin "$TARGET_BRANCH"
+            git checkout "$TARGET_BRANCH"
+          fi
+
+          git checkout feature/${SELECTION}
           git tag -a "$TAG" -m "$TAG"
           git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }}.git --tags
 
