@@ -10,6 +10,7 @@ on:
         options:
           - p2p
           - cdd
+          - cdd
       version_bump:
         description: 'Version bump type (major, minor, patch):'
         required: true
