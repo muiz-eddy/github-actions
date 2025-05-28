@@ -93,6 +93,10 @@ jobs:
             git checkout "$BRANCH"
           fi
 
+          DESCRIPTION=$(git log -1 --pretty=%B)
+          echo "DESCRIPTION<<EOF" >> $GITHUB_ENV
+          echo "$DESCRIPTION" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
           git tag -a "$TAG" -m "$TAG"
           git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }}.git --tags
 
@@ -101,10 +105,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: "${{ github.event.inputs.selection }}/v${{ steps.bump.outputs.new_version }}"
-          name: "${{ github.event.inputs.selection }}/v${{ steps.bump.outputs.new_version }}"
-
-
+          tag_name: "${SELECTION}/v${{ steps.bump.outputs.new_version }}"
+          name: "${SELECTION}/v${{ steps.bump.outputs.new_version }}"
+          body: "${DESCRIPTION}"         
 
       - name: Build p2p
         if: env.SELECTION == 'p2p'
