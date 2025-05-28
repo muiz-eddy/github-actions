@@ -93,7 +93,6 @@ jobs:
             git checkout "$BRANCH"
           fi
 
-          git checkout feature/${SELECTION}
           git tag -a "$TAG" -m "$TAG"
           git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }}.git --tags
 
